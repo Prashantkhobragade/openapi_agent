@@ -1,9 +1,18 @@
 import openai
 import requests
 import json
+from langchain_groq import ChatGroq
+from groq import Groq
+import os
+
 
 # Set your OpenAI API key here
-openai.api_key = 'your-api-key-here'
+load_dotenv()
+
+groq_api_key = os.environ["GROQ_API_KEY"]
+
+
+llm = Groq()
 
 def get_openapi_spec_from_url(url):
     try:
@@ -36,8 +45,8 @@ def analyze_with_gpt4(spec):
     """
 
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-4",
+        response = llm.chat.completions.create(
+            model="llama3-8b-8192",
             messages=[
                 {"role": "system", "content": "You are an expert in analyzing OpenAPI specifications."},
                 {"role": "user", "content": prompt}
@@ -45,7 +54,7 @@ def analyze_with_gpt4(spec):
         )
         return response.choices[0].message['content']
     except Exception as e:
-        return f"Error in GPT-4 analysis: {str(e)}"
+        return f"Error in llama3 analysis: {str(e)}"
 
 def get_user_input():
     while True:

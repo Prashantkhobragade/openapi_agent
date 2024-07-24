@@ -1,4 +1,4 @@
-import openai
+
 import requests
 import json
 from langchain_groq import ChatGroq

@@ -6,7 +6,7 @@ from groq import Groq
 import os
 
 
-# Set your OpenAI API key here
+from dotenv import load_dotenv
 load_dotenv()
 
 groq_api_key = os.environ["GROQ_API_KEY"]
@@ -26,7 +26,7 @@ def get_openapi_spec_from_url(url):
         print("The response from the URL is not valid JSON.")
         return None
 
-def analyze_with_gpt4(spec):
+def analyze_with_llama(spec):
     prompt = f"""
     Analyze the following OpenAPI specification and provide a detailed breakdown:
 
@@ -46,7 +46,7 @@ def analyze_with_gpt4(spec):
 
     try:
         response = llm.chat.completions.create(
-            model="llama3-8b-8192",
+            model="llama-3.1-8b-instant",
             messages=[
                 {"role": "system", "content": "You are an expert in analyzing OpenAPI specifications."},
                 {"role": "user", "content": prompt}
@@ -72,7 +72,7 @@ def main():
         print("Failed to retrieve a valid OpenAPI specification. Exiting.")
         return
 
-    analysis = analyze_with_gpt4(spec)
+    analysis = analyze_with_llama(spec)
     print("\nAnalysis:")
     print(analysis)
 

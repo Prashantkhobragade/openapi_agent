@@ -18,9 +18,15 @@ def get_openapi_spec_from_url(url):
     try:
         response = requests.get(url)
         response.raise_for_status()
+
+        if response.headers.get('Content-Type') != 'application/json':
+            print("The response content type is not JSON.")
+            return None
+        
         return response.json()
     except requests.RequestException as e:
         print(f"Error fetching OpenAPI specification: {e}")
+        print(f"Response content: {response.text}")
         return None
     except json.JSONDecodeError:
         print("The response from the URL is not valid JSON.")
@@ -52,7 +58,8 @@ def analyze_with_llama(spec):
                 {"role": "user", "content": prompt}
             ]
         )
-        return response.choices[0].message['content']
+        return response.choices[0].message.content
+        print(response.choices[0].message.content)
     except Exception as e:
         return f"Error in llama3 analysis: {str(e)}"
 
